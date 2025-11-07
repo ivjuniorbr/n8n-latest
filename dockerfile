@@ -1,23 +1,20 @@
-# usa a imagem oficial do n8n
-FROM n8nio/n8n:latest
+FROM node:18
 
-USER root
-
-# Instala utilitários importantes
+# Instalar FFmpeg
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      ffmpeg \
-      imagemagick \
-      jq \
-      curl \
-      wget \
-      git \
-      python3 \
-      python3-pip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get install -y ffmpeg && \
+    apt-get clean
 
-# Instale pacotes python úteis (opcional)
-# RUN pip3 install --no-cache-dir pydub
+# Criar diretório da aplicação
+WORKDIR /app
 
-# Retorna para usuário node (n8n roda como node)
-USER node
+# Instalar n8n global
+RUN npm install -g n8n
+
+# Variáveis obrigatórias do n8n
+ENV N8N_PORT=5678
+ENV N8N_BASIC_AUTH_ACTIVE=true
+
+EXPOSE 5678
+
+CMD ["n8n"]
