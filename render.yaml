@@ -20,14 +20,19 @@ services:
       - key: N8N_PROTOCOL
         value: https
       - key: WEBHOOK_URL
-        value: https://n8n.onrender.com
+        fromService:
+          type: web
+          name: n8n
+          property: url
       - key: EXECUTIONS_MODE
         value: regular
       - key: DB_TYPE
-        value: postgresdb
+        value: sqlite
       - key: N8N_ENCRYPTION_KEY
-        value: your-encryption-key-here-change-this
+        generateValue: true
       - key: N8N_DIAGNOSTICS_ENABLED
         value: 'false'
+      - key: N8N_USER_FOLDER
+        value: /home/node/.n8n
     ports:
       - port: 5678
