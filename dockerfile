@@ -1,8 +1,11 @@
-FROM node:18-alpine
+FROM n8nio/n8n:latest
 
-# Instala as dependências do sistema
-RUN apk update && \
-    apk add --no-cache \
+# Switch to root user to install packages
+USER root
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
       ffmpeg \
       imagemagick \
       jq \
@@ -10,37 +13,21 @@ RUN apk update && \
       wget \
       git \
       python3 \
-      py3-pip \
-      postgresql-client \
-      redis \
-    && rm -rf /var/cache/apk/*
+      python3-pip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Instala Python e pip
-RUN python3 --version && pip3 --version
+# Install Python packages if needed
+RUN pip3 install --no-cache-dir --upgrade pip
 
-# Instala wait-for-it para aguardar serviços dependentes
-RUN wget -O /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh \
-    && chmod +x /usr/local/bin/wait-for-it.sh
+# Switch back to n8n user
+USER node
 
-# Cria diretório da aplicação
-WORKDIR /app
+# Create necessary directories
+RUN mkdir -p /home/node/.n8n /home/node/.tmp
 
-# Copia package.json primeiro para cache eficiente
-COPY package*.json ./
-COPY . .
-
-# Instala dependências do Node.js
-RUN npm install
-
-# Cria diretórios necessários
-RUN mkdir -p /app/n8n_data /app/tmp_data
-
-# Expõe a porta do n8n
+# Expose n8n port
 EXPOSE 5678
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:5678/healthz || exit 1
-
-# Comando para iniciar (ajuste conforme necessário)
-CMD ["node", "packages/cli/bin/n8n", "start"]
