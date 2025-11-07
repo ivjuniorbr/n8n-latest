@@ -3,9 +3,9 @@ FROM n8nio/n8n:latest
 # Switch to root user to install packages
 USER root
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+# Install system dependencies (Alpine Linux uses apk)
+RUN apk update && \
+    apk add --no-cache \
       ffmpeg \
       imagemagick \
       jq \
@@ -13,8 +13,9 @@ RUN apt-get update && \
       wget \
       git \
       python3 \
-      python3-pip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+      py3-pip \
+      bash \
+    && rm -rf /var/cache/apk/*
 
 # Install Python packages if needed
 RUN pip3 install --no-cache-dir --upgrade pip
