@@ -15,5 +15,19 @@ services:
         value: admin123
       - key: GENERIC_TIMEZONE
         value: America/Sao_Paulo
+      - key: TZ
+        value: America/Sao_Paulo
+      - key: N8N_PROTOCOL
+        value: https
+      - key: WEBHOOK_URL
+        value: https://n8n.onrender.com
+      - key: EXECUTIONS_MODE
+        value: regular
+      - key: DB_TYPE
+        value: postgresdb
+      - key: N8N_ENCRYPTION_KEY
+        value: your-encryption-key-here-change-this
+      - key: N8N_DIAGNOSTICS_ENABLED
+        value: 'false'
     ports:
       - port: 5678
