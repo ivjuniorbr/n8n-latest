@@ -1,4 +1,4 @@
-FROM node:18
+FROM n8nio/n8n:latest
 
 # Instalar FFmpeg
 RUN apt-get update && \
